@@ -1,0 +1,681 @@
+/* ─────────────────────────────────────────────────────────────
+   05 · Collection — the scrapbook
+   ───────────────────────────────────────────────────────────── */
+
+.coll {
+  position: relative;
+  padding-top: 96px;
+  overflow-x: clip;
+}
+
+.coll__head {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 440px);
+  gap: clamp(24px, 4vw, 60px);
+  align-items: end;
+  padding-bottom: 40px;
+}
+
+.coll__kicker {
+  margin: 0 0 10px;
+}
+
+.coll__title {
+  margin: 0;
+  font-size: clamp(56px, 8.5vw, 136px);
+}
+
+.coll__of {
+  display: block;
+  color: var(--bubblegum);
+  -webkit-text-stroke: 0.03em var(--ink);
+  paint-order: stroke fill;
+  text-shadow: 0.05em 0.05em 0 var(--ink);
+  font-size: 0.62em;
+  overflow-wrap: anywhere;
+}
+
+.coll__titles .lede {
+  margin: 20px 0 0;
+}
+
+.coll__tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.coll__tool {
+  height: 52px;
+}
+
+.coll__tool .keycap__top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 16px 4px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.coll__hint {
+  margin: 12px 0 0;
+  padding: 8px 12px;
+  border: 2px dashed var(--bubblegum);
+  border-radius: 10px;
+  font-size: 12px;
+}
+
+.coll__pass {
+  display: grid;
+  justify-items: start;
+  gap: 14px;
+}
+
+.coll__pass .pass {
+  transform: rotate(2deg);
+}
+
+.coll__nopass {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border: 3px dashed var(--ink);
+  border-radius: 20px;
+  font-size: 15px;
+}
+
+.coll__page {
+  position: relative;
+  padding: clamp(46px, 6vw, 80px) 0;
+  border-top: var(--line-bold) solid var(--ink);
+}
+
+.coll__h {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin: 0 0 26px;
+  font-size: clamp(40px, 5vw, 72px);
+}
+
+.coll__count {
+  font-size: 14px;
+  padding: 5px 9px 4px;
+  border: 2px solid currentColor;
+  border-radius: 7px;
+}
+
+.coll__page--into {
+  background-image: radial-gradient(rgb(23 23 43 / 0.16) 1.3px, transparent 1.8px), var(--grain);
+  background-size:
+    22px 22px,
+    auto;
+}
+
+.coll__page--later {
+  background-color: var(--butter);
+  background-image: var(--grain);
+}
+
+.coll__page--stamps {
+  background-color: var(--lavender);
+  background-image: repeating-linear-gradient(0deg, rgb(23 23 43 / 0.08) 0 1.5px, transparent 1.5px 28px), var(--grain);
+}
+
+.coll__page--badges {
+  background-color: var(--ink);
+  background-image: radial-gradient(rgb(255 246 220 / 0.07) 1.2px, transparent 1.8px);
+  background-size: 11px 11px;
+}
+
+.coll__page--badges .coll__h {
+  color: var(--butter);
+}
+
+.coll__page--end {
+  padding-bottom: calc(var(--dock-space) + 40px);
+}
+
+.coll__two {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(24px, 4vw, 60px);
+  align-items: start;
+}
+
+/* ── Into-it shelf: flip cards ─────────────────────────────── */
+.shelf {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 34px 26px;
+  margin: 0;
+  padding: 10px 0 0;
+  list-style: none;
+}
+
+.flip {
+  position: relative;
+  aspect-ratio: 0.72;
+  transform: rotate(var(--tilt));
+  transition: transform 0.5s var(--ease-spring);
+}
+
+.flip:hover,
+.flip:focus-within {
+  transform: rotate(0deg) translateY(-6px);
+  z-index: 2;
+}
+
+.flip .tape {
+  z-index: 3;
+}
+
+.flip__inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+.flip__face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.flip__front {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.flip__front .poster__title {
+  font-size: min(40px, calc((100cqi - 34px) / (var(--len) * 0.62)));
+}
+
+.flip__has-note {
+  position: absolute;
+  right: -8px;
+  bottom: 18px;
+  padding: 4px 8px 3px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  background: var(--acid-green);
+  font-size: 10px;
+  transform: rotate(-6deg);
+}
+
+.flip__face--back {
+  display: grid;
+  grid-template-rows: auto auto auto 1fr auto;
+  gap: 6px;
+  padding: 16px 14px 12px;
+  border: var(--line-bold) solid var(--ink);
+  border-radius: 24px;
+  background-color: #fffaf0;
+  background-image: repeating-linear-gradient(0deg, transparent 0 25px, rgb(22 119 232 / 0.18) 25px 26.5px);
+  box-shadow: 6px 6px 0 var(--ink);
+  transform: rotateY(180deg);
+}
+
+.flip__date {
+  margin: 0;
+  font-size: 10px;
+  color: var(--electric-deep);
+}
+
+.flip__name {
+  margin: 0 0 4px;
+  font-size: 30px;
+}
+
+.flip__note {
+  min-height: 0;
+  height: 100%;
+  resize: none;
+  font-size: 14px;
+  background: transparent;
+  box-shadow: none;
+  border-style: dashed;
+}
+
+.flip__actions {
+  display: flex;
+  gap: 6px;
+}
+
+.flip__act {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  background: var(--paper);
+}
+
+.flip__act:hover {
+  background: var(--butter);
+}
+
+.flip__act--back {
+  display: inline-flex;
+  gap: 6px;
+  width: auto;
+  margin-left: auto;
+  padding: 0 10px;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+/* ── Clothesline ──────────────────────────────────────────── */
+.line {
+  position: relative;
+  padding: 0 var(--gutter) 10px;
+}
+
+.line::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 22px;
+  height: 40px;
+  border-top: 3px solid var(--ink);
+  border-radius: 50% 50% 0 0 / 30px 30px 0 0;
+  transform: scaleY(-1);
+  pointer-events: none;
+}
+
+.line__items {
+  display: flex;
+  gap: 26px;
+  width: max-content;
+  margin: 0;
+  padding: 26px 0 20px;
+  list-style: none;
+}
+
+.line__item {
+  position: relative;
+  width: 168px;
+  padding-top: 18px;
+  transform-origin: 50% 0;
+  animation: swing 4.5s ease-in-out var(--swing-delay) infinite;
+}
+
+@keyframes swing {
+  0%,
+  100% {
+    transform: rotate(calc(var(--swing) * -1));
+  }
+  50% {
+    transform: rotate(var(--swing));
+  }
+}
+
+.line__item:hover {
+  animation-duration: 0.9s;
+}
+
+html[data-motion='calm'] .line__item,
+html[data-tab='hidden'] .line__item {
+  animation: none;
+}
+
+.line__peg {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  z-index: 2;
+  width: 14px;
+  height: 34px;
+  margin-left: -7px;
+  border: 2.5px solid var(--ink);
+  border-radius: 4px;
+  background: var(--tangerine);
+}
+
+.line__card {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+/* ── Stamp album ──────────────────────────────────────────── */
+.album {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 34px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.album__link {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  transition: transform 0.5s var(--ease-spring);
+}
+
+.album__link:hover {
+  transform: scale(1.06) rotate(-3deg);
+}
+
+.album__date {
+  font-size: 11px;
+  opacity: 0.75;
+}
+
+.album--empty {
+  align-items: center;
+}
+
+.album__hint {
+  max-width: 280px;
+  font-size: 15px;
+}
+
+.album__hint a {
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+/* ── Receipt ──────────────────────────────────────────────── */
+.receipt {
+  position: relative;
+  max-width: 440px;
+  padding: 22px 22px 30px;
+  background: #fffdf6;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  box-shadow: 5px 6px 0 rgb(23 23 43 / 0.2);
+  transform: rotate(-1.2deg);
+  mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 18px 100%;
+}
+
+.receipt__head {
+  margin: 0;
+  font-size: 12px;
+  text-align: center;
+}
+
+.receipt__rule {
+  height: 0;
+  margin: 12px 0;
+  border-top: 2px dashed var(--ink);
+}
+
+.receipt__empty {
+  margin: 0;
+  opacity: 0.7;
+}
+
+.receipt__lines {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.receipt__lines li,
+.receipt__total {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 0;
+}
+
+.receipt__k {
+  max-width: 70%;
+  text-transform: uppercase;
+}
+
+.receipt__dots {
+  flex: 1;
+  border-bottom: 2px dotted rgb(23 23 43 / 0.5);
+  transform: translateY(-3px);
+}
+
+.receipt__total {
+  font-weight: 700;
+}
+
+.receipt__thanks {
+  margin: 16px 0 0;
+  font-size: 11px;
+  text-align: center;
+}
+
+.made {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 14px;
+  padding: 0;
+  list-style: none;
+}
+
+.made__item {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border: var(--line) solid var(--ink);
+  border-radius: 16px;
+  background: #fffaf0;
+}
+
+.made__item div {
+  display: grid;
+  gap: 2px;
+}
+
+.made__item .mono {
+  font-size: 11px;
+  opacity: 0.75;
+}
+
+.made__item a {
+  text-decoration: underline;
+}
+
+.made__cover.cover {
+  aspect-ratio: 1.3;
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+}
+
+.made__item--thread {
+  grid-template-columns: 46px 1fr;
+}
+
+.made__icon {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  background: var(--butter);
+}
+
+.made__empty {
+  margin: 0 0 14px;
+  font-size: 15px;
+  opacity: 0.75;
+}
+
+/* ── Badges ───────────────────────────────────────────────── */
+.badges {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 26px 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.badge {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  text-align: center;
+  color: rgb(255 246 220 / 0.6);
+}
+
+.badge.is-earned {
+  color: var(--paper);
+}
+
+.badge .badge-art {
+  transition: transform 0.5s var(--ease-spring);
+}
+
+.badge.is-earned:hover .badge-art {
+  transform: rotate(-10deg) scale(1.08);
+}
+
+.badge:not(.is-earned) .badge-art {
+  filter: invert(1);
+  opacity: 0.55;
+}
+
+.badge__name {
+  margin: 0;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.badge__hint {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.35;
+  opacity: 0.8;
+}
+
+/* ── Discovery & data ─────────────────────────────────────── */
+.dmap__count {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0 0 14px;
+}
+
+.dmap__count .display {
+  font-size: 80px;
+}
+
+.dmap__dots {
+  display: grid;
+  grid-template-columns: repeat(13, 1fr);
+  gap: 8px;
+  max-width: 420px;
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.dmap__dots li {
+  aspect-ratio: 1;
+  border: 2px dashed rgb(23 23 43 / 0.35);
+  border-radius: 50%;
+}
+
+.dmap__dots li.is-on {
+  border: 2px solid var(--ink);
+  background: var(--c);
+}
+
+.coll__data {
+  padding: 18px;
+  border: 2px dashed var(--ink);
+  border-radius: 18px;
+}
+
+.coll__data p {
+  margin: 8px 0 14px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.confirm {
+  width: min(480px, 100%);
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+}
+
+.confirm__title {
+  margin: 0;
+  font-size: 46px;
+}
+
+.confirm p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.confirm__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+/* ── Sticker layer ────────────────────────────────────────── */
+.sticker-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.placed {
+  position: absolute;
+  pointer-events: none;
+}
+
+.placed.is-editing {
+  pointer-events: auto;
+  cursor: grab;
+  touch-action: none;
+  filter: drop-shadow(0 0 0 transparent);
+  outline: 2px dashed var(--bubblegum);
+  outline-offset: 4px;
+  border-radius: 50%;
+}
+
+.placed.is-editing:active {
+  cursor: grabbing;
+}
+
+@media (max-width: 860px) {
+  .coll__head,
+  .coll__two {
+    grid-template-columns: 1fr;
+  }
+  .shelf {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 26px 16px;
+  }
+  .placed svg {
+    width: 64px;
+    height: 64px;
+  }
+}

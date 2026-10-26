@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en" data-motion="full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="description" content="CommonGround — a digital playground for the chronically curious. Swipe hobbies, fall down rabbit holes, find your room." />
+    <meta name="theme-color" content="#FFDE70" />
+    <script>
+      // Resolve calm/full motion before first paint. Keep in sync with src/motion/calm.ts.
+      (function () {
+        var pref = 'system';
+        try {
+          var raw = localStorage.getItem('commonground:collector');
+          if (raw) pref = (JSON.parse(raw).state || {}).motion || 'system';
+        } catch (e) {}
+        var calm = pref === 'calm' || (pref === 'system' && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+        document.documentElement.setAttribute('data-motion', calm ? 'calm' : 'full');
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=DM+Sans:ital,opsz,wght@0,9..40,400..800;1,9..40,400..700&family=Silkscreen:wght@400;700&family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>CommonGround — Find your kind of weird</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

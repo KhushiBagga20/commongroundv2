@@ -1,0 +1,139 @@
+/* ─────────────────────────────────────────────────────────────
+   Design tokens. The nine brand colours are the source of truth;
+   everything else is derived from them.
+   ───────────────────────────────────────────────────────────── */
+:root {
+  --ink: #17172b;
+  --butter: #ffde70;
+  --electric-blue: #1677e8;
+  --acid-green: #b5ff5c;
+  --bubblegum: #ff70bb;
+  --tangerine: #ff7148;
+  --lavender: #b6a0ff;
+  --deep-teal: #154d50;
+  --paper: #fff6dc;
+
+  /* derived */
+  --ink-deep: #0e0e1c;
+  --ink-soft: #2b2b45;
+  --ink-mute: #5b5b78;
+  --electric-deep: #0b57b8;
+  --paper-shade: #f3e6c0;
+  --plastic: #f5ecd6;
+  --plastic-side: #cbbd99;
+  --plastic-shade: #a8996f;
+
+  /* lines, radii, depth */
+  --line: 2.5px;
+  --line-bold: 3px;
+  --r-s: 10px;
+  --r-m: 16px;
+  --r-l: 26px;
+  --r-xl: 34px;
+  --shadow-hard: 5px 5px 0 var(--ink);
+  --shadow-hard-lg: 8px 8px 0 var(--ink);
+
+  /* easing — CSS linear() springs generated from a damped oscillator */
+  --ease-spring: linear(
+    0,
+    0.152,
+    0.481,
+    0.824,
+    1.079,
+    1.21,
+    1.23,
+    1.178,
+    1.096,
+    1.021,
+    0.969,
+    0.947,
+    0.949,
+    0.964,
+    0.983,
+    0.999,
+    1.009,
+    1.013,
+    1.011,
+    1.007,
+    1.003,
+    0.999,
+    0.997,
+    0.997,
+    0.998,
+    0.999,
+    1
+  );
+  --ease-spring-soft: linear(
+    0,
+    0.089,
+    0.287,
+    0.517,
+    0.727,
+    0.891,
+    1.003,
+    1.067,
+    1.092,
+    1.092,
+    1.077,
+    1.056,
+    1.035,
+    1.017,
+    1.004,
+    0.996,
+    0.992,
+    0.991,
+    0.992,
+    0.994,
+    0.996,
+    0.998,
+    0.999,
+    1
+  );
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.7, 0, 0.2, 1);
+
+  /* textures */
+  --grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='1.15' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.09 0 0 0 0 0.09 0 0 0 0 0.17 0 0 0 0.62 -0.24'/></filter><rect width='100%25' height='100%25' filter='url(%23g)'/></svg>");
+
+  /* layout */
+  --gutter: clamp(16px, 4vw, 56px);
+  --dock-space: 112px;
+  --focus: var(--ink);
+
+  color-scheme: light;
+}
+
+@media (max-width: 640px) {
+  :root {
+    --dock-space: 96px;
+    --line: 2px;
+    --shadow-hard: 4px 4px 0 var(--ink);
+    --shadow-hard-lg: 6px 6px 0 var(--ink);
+  }
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-ink-deep: var(--ink-deep);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-mute: var(--ink-mute);
+  --color-butter: var(--butter);
+  --color-electric: var(--electric-blue);
+  --color-electric-deep: var(--electric-deep);
+  --color-acid: var(--acid-green);
+  --color-bubblegum: var(--bubblegum);
+  --color-tangerine: var(--tangerine);
+  --color-lavender: var(--lavender);
+  --color-teal: var(--deep-teal);
+  --color-paper: var(--paper);
+  --color-paper-shade: var(--paper-shade);
+
+  --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Archivo', 'Arial Black', Impact, sans-serif;
+  --font-mono: 'Space Mono', ui-monospace, 'SFMono-Regular', monospace;
+  --font-pixel: 'Silkscreen', 'Space Mono', monospace;
+
+  --radius-s: var(--r-s);
+  --radius-m: var(--r-m);
+  --radius-l: var(--r-l);
+}

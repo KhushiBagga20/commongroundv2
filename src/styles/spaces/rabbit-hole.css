@@ -1,0 +1,856 @@
+/* ─────────────────────────────────────────────────────────────
+   03 · Rabbit Hole
+   ───────────────────────────────────────────────────────────── */
+
+.hole {
+  --hole-bg: #0f3b3e;
+  position: relative;
+  height: 100dvh;
+  min-height: 560px;
+  padding-bottom: 0;
+  overflow: hidden;
+  background-color: var(--hole-bg);
+  color: var(--paper);
+}
+
+.hole__bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-radial-gradient(circle at 50% 54%, transparent 0 70px, rgb(255 222 112 / 0.05) 70px 73px),
+    radial-gradient(rgb(255 246 220 / 0.07) 1.2px, transparent 1.8px) 0 0 / 12px 12px;
+}
+
+.hole__head {
+  position: absolute;
+  left: var(--gutter);
+  top: 74px;
+  z-index: 5;
+  max-width: 360px;
+  pointer-events: none;
+}
+
+.hole__kicker {
+  margin: 0 0 6px;
+  color: var(--acid-green);
+}
+
+.hole__title {
+  margin: 0;
+  font-size: clamp(40px, 4.8vw, 74px);
+  color: var(--butter);
+  text-shadow: 0.05em 0.05em 0 var(--ink);
+}
+
+.hole__stats {
+  margin: 8px 0 0;
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+.hole__progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.hole__track {
+  position: relative;
+  width: 160px;
+  height: 14px;
+  overflow: hidden;
+  border: 2px solid var(--paper);
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.25);
+}
+
+.hole__fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--acid-green);
+  box-shadow: 0 0 10px rgb(181 255 92 / 0.6);
+  transition: width 0.6s var(--ease-spring);
+}
+
+.hole__progress-label {
+  font-size: 11px;
+  color: var(--acid-green);
+}
+
+.hole__tools {
+  position: absolute;
+  right: var(--gutter);
+  top: 72px;
+  z-index: 6;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.hole__search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 280px;
+  height: 46px;
+  border: var(--line) solid var(--ink);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+  transition: width 0.4s var(--ease-spring);
+}
+
+.hole__search-icon {
+  position: absolute;
+  left: 14px;
+}
+
+.hole__search-input {
+  width: 100%;
+  height: 100%;
+  padding: 0 16px 0 40px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  font-size: 14px;
+  cursor: text;
+}
+
+.hole__search-input:focus-visible {
+  outline: none;
+}
+
+.hole__search:focus-within {
+  outline: 3px solid var(--acid-green);
+  outline-offset: 3px;
+}
+
+.hole__results {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  right: 0;
+  display: grid;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: var(--paper);
+  border: var(--line) solid var(--ink);
+  border-radius: 18px;
+  box-shadow: 5px 5px 0 var(--ink);
+}
+
+.hole__results button {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  text-align: left;
+  font-size: 14px;
+}
+
+.hole__results button:hover {
+  background: var(--butter);
+}
+
+.hole__results span {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  opacity: 0.65;
+  text-transform: uppercase;
+}
+
+.hole__noresult {
+  padding: 10px 12px;
+  font-size: 13px;
+}
+
+.hole__view {
+  display: flex;
+  gap: 6px;
+}
+
+.hole__viewkey {
+  height: 46px;
+}
+
+.hole__viewkey .keycap__top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 14px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+/* ── Map ──────────────────────────────────────────────────── */
+.hole__viewport {
+  --k: 1;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.hole__viewport:focus-visible {
+  outline: 3px solid var(--acid-green);
+  outline-offset: -8px;
+}
+
+.hole__viewport.is-panning,
+.hole__viewport.is-dragging-node {
+  cursor: grabbing;
+}
+
+.hole__world {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+.hole__edges {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  overflow: visible;
+}
+
+.hole__edge {
+  stroke: rgb(255 246 220 / 0.32);
+  stroke-width: 2;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  transition:
+    opacity 0.25s,
+    stroke 0.2s;
+}
+
+.hole__world[data-focus] .hole__edge {
+  opacity: 0.22;
+}
+
+.hole__world[data-focus] .hole__edge.is-lit {
+  opacity: 1;
+  stroke: var(--butter);
+  stroke-width: 3.5;
+}
+
+.hole__because {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.hole__because > span {
+  display: block;
+  padding: 4px 9px 3px;
+  border: 2px solid var(--butter);
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--butter);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  transform: translate(-50%, -50%) scale(max(0.9, calc(0.95 / var(--k))));
+  animation: because-in 0.35s var(--ease-spring) both;
+}
+
+@keyframes because-in {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+}
+
+.node {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 3;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.node__inner {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  transform: translate(-50%, -40px);
+  transition:
+    transform 0.5s var(--ease-spring),
+    opacity 0.25s;
+}
+
+.node__disc {
+  display: grid;
+  place-items: center;
+  width: 80px;
+  height: 80px;
+  border: var(--line-bold) solid var(--ink);
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow:
+    0 0 0 3px var(--paper),
+    5px 7px 0 3px rgb(0 0 0 / 0.35);
+  transition: box-shadow 0.25s;
+}
+
+.node__art {
+  width: 84%;
+  height: 84%;
+}
+
+.node__label {
+  padding: 3px 7px 2px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transform: scale(max(1, calc(0.75 / var(--k))));
+  transform-origin: 50% 0;
+}
+
+.node--new .node__disc {
+  box-shadow:
+    0 0 0 3px rgb(255 246 220 / 0.35),
+    5px 7px 0 3px rgb(0 0 0 / 0.3);
+}
+
+.node--new .node__art {
+  filter: grayscale(0.85) opacity(0.7);
+}
+
+.node--new .node__label {
+  background: rgb(255 246 220 / 0.7);
+}
+
+.node--into .node__disc {
+  box-shadow:
+    0 0 0 4px var(--acid-green),
+    0 0 0 7px var(--ink),
+    5px 7px 0 6px rgb(0 0 0 / 0.35);
+}
+
+.node--later .node__disc {
+  box-shadow:
+    0 0 0 4px var(--lavender),
+    0 0 0 7px var(--ink),
+    5px 7px 0 6px rgb(0 0 0 / 0.35);
+}
+
+.node__new {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: var(--butter);
+  color: var(--ink);
+  font-size: 12px;
+}
+
+.node:hover .node__inner {
+  transform: translate(-50%, -40px) scale(1.1) rotate(-4deg);
+}
+
+.node.is-focus {
+  z-index: 4;
+}
+
+.node.is-focus .node__inner {
+  transform: translate(-50%, -40px) scale(1.35);
+}
+
+.node.is-focus .node__disc {
+  box-shadow:
+    0 0 0 5px var(--butter),
+    0 0 0 8px var(--ink),
+    0 0 40px 10px rgb(255 222 112 / 0.4);
+}
+
+.node.is-focus .node__art {
+  filter: none;
+}
+
+.hole__world[data-focus] .node:not(.is-focus):not(.is-near) .node__inner {
+  opacity: 0.3;
+}
+
+.node:focus-visible {
+  outline: none;
+}
+
+.node:focus-visible .node__disc {
+  outline: 3px solid var(--acid-green);
+  outline-offset: 7px;
+}
+
+.hole__zoom {
+  position: absolute;
+  right: var(--gutter);
+  bottom: 124px;
+  z-index: 6;
+  display: grid;
+  gap: 8px;
+}
+
+.hole__zoom .keycap {
+  width: 48px;
+  height: 50px;
+}
+
+.hole__legend {
+  position: absolute;
+  right: calc(var(--gutter) + 66px);
+  bottom: 130px;
+  z-index: 5;
+  display: grid;
+  gap: 6px;
+  font-size: 11px;
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.hole__legend span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hole__key {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 3px solid var(--paper);
+}
+
+.hole__key--into {
+  border-color: var(--acid-green);
+}
+
+.hole__key--later {
+  border-color: var(--lavender);
+}
+
+.hole__key--new {
+  border-style: dashed;
+  opacity: 0.6;
+}
+
+.hole__pip {
+  position: absolute;
+  left: var(--gutter);
+  bottom: 118px;
+  z-index: 5;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.hole__tip {
+  max-width: 230px;
+  margin: 0 0 18px;
+  padding: 10px 12px;
+  border: 2px solid var(--ink);
+  border-radius: 14px 14px 14px 2px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.4;
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+/* ── Field notes ──────────────────────────────────────────── */
+.notes {
+  position: absolute;
+  right: 16px;
+  top: 132px;
+  bottom: 112px;
+  z-index: 8;
+  display: flex;
+  flex-direction: column;
+  width: 390px;
+  overflow: hidden;
+  border: var(--line-bold) solid var(--ink);
+  border-radius: 28px;
+  background-color: var(--paper);
+  background-image: var(--grain);
+  color: var(--ink);
+  box-shadow: -8px 8px 0 var(--ink);
+}
+
+.notes__head {
+  position: relative;
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 54px 16px 16px;
+  background-color: var(--bg);
+  color: var(--fg);
+  border-bottom: var(--line) solid var(--ink);
+}
+
+.notes__close {
+  position: absolute !important;
+  top: 12px;
+  right: 12px;
+}
+
+.notes__art {
+  width: 92px;
+  height: 92px;
+  filter: drop-shadow(3px 4px 0 rgb(23 23 43 / 0.4));
+}
+
+.notes__no {
+  margin: 0 0 4px;
+  font-size: 10px;
+}
+
+.notes__name {
+  margin: 0;
+  font-size: min(40px, calc(206px / (var(--len) * 0.6)));
+}
+
+.notes__fresh {
+  position: absolute;
+  right: 6px;
+  bottom: -30px;
+  z-index: 2;
+}
+
+.notes__body {
+  flex: 1;
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  padding: 18px 16px 22px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.notes__tagline {
+  margin: 0;
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.notes__h {
+  margin: 0 0 8px;
+}
+
+.notes__hint {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  opacity: 0.7;
+}
+
+.notes__links {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.notes__link {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 6px 12px 6px 6px;
+  border: 2px solid var(--ink);
+  border-radius: 14px;
+  background: #fffaf0;
+  text-align: left;
+  transition:
+    transform 0.4s var(--ease-spring),
+    background-color 0.15s;
+}
+
+.notes__link:hover {
+  transform: translateX(4px);
+  background: var(--butter);
+}
+
+.notes__link-art {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: var(--c);
+}
+
+.notes__link-art svg {
+  width: 84%;
+  height: 84%;
+}
+
+.notes__link-text strong {
+  display: block;
+  font-size: 14px;
+}
+
+.notes__link-text em {
+  display: block;
+  font-size: 12.5px;
+  font-style: normal;
+  opacity: 0.7;
+}
+
+.notes__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.notes__trail ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  margin: 0 0 8px;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+}
+
+.notes__trail li:not(:last-child)::after {
+  content: ' →';
+  opacity: 0.5;
+}
+
+.notes__trail li[aria-current] {
+  font-weight: 800;
+}
+
+.notes__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+/* ── List view ────────────────────────────────────────────── */
+.hole__listwrap {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 250px var(--gutter) 150px;
+}
+
+.hole-list {
+  display: grid;
+  gap: 40px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.hole-list__cat {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 12px;
+  margin: 0 0 14px;
+}
+
+.hole-list__cat .display {
+  font-size: 44px;
+  color: var(--butter);
+}
+
+.hole-list__dot {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--paper);
+  border-radius: 50%;
+}
+
+.hole-list__blurb {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.hole-list__items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hole-list__item {
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+  border: var(--line) solid var(--ink);
+  border-radius: 18px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+
+.hole-list__main {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  padding: 10px;
+  border: 0;
+  background: none;
+  text-align: left;
+}
+
+.hole-list__main:hover {
+  background: var(--butter);
+}
+
+.hole-list__art {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: var(--c);
+}
+
+.hole-list__art svg {
+  width: 84%;
+  height: 84%;
+}
+
+.hole-list__text {
+  display: grid;
+  gap: 2px;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.hole-list__text strong {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+}
+
+.hole-list__leads {
+  font-size: 10.5px;
+  opacity: 0.65;
+}
+
+.hole-list__map {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  border: 0;
+  border-left: 2px solid var(--ink);
+  background: var(--lavender);
+}
+
+.hole-list__map:hover {
+  background: var(--acid-green);
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .hole__head {
+    top: 66px;
+  }
+  .hole__title {
+    font-size: 34px;
+  }
+  .hole__stats {
+    display: none;
+  }
+  .hole__tools {
+    top: auto;
+    bottom: 104px;
+    left: 8px;
+    right: 8px;
+    justify-content: space-between;
+  }
+  .hole__search {
+    flex: 1;
+    width: auto;
+  }
+  .hole__zoom {
+    display: none;
+  }
+  .hole__legend {
+    display: none;
+  }
+  .hole__pip {
+    display: none;
+  }
+  .notes {
+    left: 8px;
+    right: 8px;
+    top: auto;
+    bottom: 160px;
+    width: auto;
+    height: 44dvh;
+    border-radius: 24px;
+    box-shadow: 0 -6px 0 var(--ink);
+  }
+  .notes__head {
+    grid-template-columns: 64px 1fr;
+    padding: 12px 50px 12px 12px;
+  }
+  .notes__art {
+    width: 64px;
+    height: 64px;
+  }
+  .notes__name {
+    font-size: min(34px, calc((100vw - 170px) / (var(--len) * 0.6)));
+  }
+  .hole__listwrap {
+    padding: 140px 12px 180px;
+  }
+  .hole-list__items {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,112 @@
+/* ─────────────────────────────────────────────────────────────
+   Ambient motion. Always on an inner element so JS-driven
+   transforms on the outer element never fight the keyframes.
+   Paused off-screen, in hidden tabs and in calm mode.
+   ───────────────────────────────────────────────────────────── */
+
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(var(--r0, 0deg));
+  }
+  50% {
+    transform: translate3d(var(--fx, 0px), var(--fy, -10px), 0) rotate(var(--r1, 3deg));
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes bulb-chase {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes wobble {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-6deg);
+  }
+  75% {
+    transform: rotate(6deg);
+  }
+}
+
+@keyframes blink-led {
+  0%,
+  92%,
+  100% {
+    opacity: 1;
+  }
+  95% {
+    opacity: 0.2;
+  }
+}
+
+.amb-float {
+  animation: float-y var(--dur, 6s) ease-in-out var(--delay, 0s) infinite;
+}
+
+.amb-spin {
+  animation: spin var(--dur, 48s) linear infinite;
+}
+
+.amb-spin-rev {
+  animation: spin var(--dur, 48s) linear infinite reverse;
+}
+
+.amb-wobble {
+  animation: wobble var(--dur, 3.5s) ease-in-out var(--delay, 0s) infinite;
+}
+
+/* Pause everything ambient when it can't be seen. */
+[data-offscreen] .amb-float,
+[data-offscreen] .amb-spin,
+[data-offscreen] .amb-spin-rev,
+[data-offscreen] .amb-wobble,
+[data-offscreen] .marquee__track,
+html[data-tab='hidden'] .amb-float,
+html[data-tab='hidden'] .amb-spin,
+html[data-tab='hidden'] .amb-spin-rev,
+html[data-tab='hidden'] .amb-wobble,
+html[data-tab='hidden'] .marquee__track {
+  animation-play-state: paused;
+}
+
+/* Calm mode: no loops, no springs, near-instant transitions. */
+html[data-motion='calm'] .amb-float,
+html[data-motion='calm'] .amb-spin,
+html[data-motion='calm'] .amb-spin-rev,
+html[data-motion='calm'] .amb-wobble,
+html[data-motion='calm'] .marquee__track {
+  animation: none !important;
+}
+
+html[data-motion='calm'] {
+  --ease-spring: ease-out;
+  --ease-spring-soft: ease-out;
+}
+
+html[data-motion='calm'] *,
+html[data-motion='calm'] *::before,
+html[data-motion='calm'] *::after {
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
